@@ -21,3 +21,38 @@ The best way to answer this question may be to point you at a very challenging p
 * A good example would be an issue I documented for the Jaeger tracing product in github. Here you can see  thorough analysis into the project code base plus test creation to prove the issues existence. https://github.com/jaegertracing/jaeger/issues/2451. 
 * Additionally an installation issue for a popular Service Mesh called Istio. https://github.com/istio/istio/issues/27564.
 
+
+# Designs
+I've somewhat recently decided to adopt [C4 Model](https://c4model.com/) as my design language of choice. I highly recommoned checking out Simon Brown's presentation on it. After struggling with my own attempts to express designs and being frustrated with the results I found that Simon's system is simple and effective.  I'll use it to show a couple of designs I used in my recent job. Theses have been sanitized so as not to expose anything proprietary. My other go-to is PlantUML which I extend using the C4 Model PlantUML extension https://github.com/plantuml-stdlib/C4-PlantUML. 
+
+Sadly, github [still doesn't have](https://github.community/t/support-uml-diagrams-in-markdown-with-plantuml-syntax/626/38) a good way to display PlantUML directly from markdown. 
+
+```
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(driver, "Vehicle Operator", "A person owning and driving a car")
+System_Ext(ihu, "HeadUnit-ICE", "Allows customer to view and control in-car applications")
+System_Boundary(c1, "Service Cloud") {
+    Container(langer, "Langer - Voice Service", "Receives textual voice results & Produces follow up Intent & Slots")
+    Container(vbs, "VBS - Voice Backend Service", "Receives textual voice results & Produces follow up Intent & Slots. Also, resolves user/vehicle identity ambiguity")
+    Container(inf, "Inference Service", "Slot & intent arbitration")
+    Container(dialogue, "Dialogue Manager Service", "Application State and execution arbitration")
+    Container(3rdPartyApp, "Specific Third Party App Service", "Some specific 3rd Party App like Yelp!")    
+}
+
+System_Ext(vprovider, "Voice Provider", "NLU Speech-to-text & Text-to-speech")
+System_Ext(3rdParty, "3rdParty", "Example 3rd Party API")
+
+Rel(vprovider, vbs, "Invokes alexa.proto w/text-from-speach", "HTTPS1.1/2 JSON")
+Rel(vprovider, langer, "Invokes w/text-from-speach", "HTTPS1.1/2 JSON")
+Rel(driver, ihu, "Interacts with", "Voice/Fingers")
+Rel(ihu, vprovider, "Invokes API calls for NLU Processing", "HTTPS2-Multipart")
+Rel(langer, dialogue, "Invokes", "HTTPS/2 GRPC")
+Rel(langer, inf, "Invokes", "HTTPS/2 GRPC")
+Rel(inf, 3rdPartyApp, "Invokes", "HTTPS/2 GRPC")
+Rel(3rdPartyApp, 3rdParty, "Invokes", "HTTPS/1.1 REST/JSON")
+Rel(ihu, vbs, "Invokes API calls for matchup and UI screen match", "HTTPS1.1-JSON")
+SHOW_LEGEND()
+@enduml
+```
