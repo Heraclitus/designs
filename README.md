@@ -69,3 +69,96 @@ SHOW_LEGEND()
 ```
 
  </details>
+
+### Below is a design for handling multiple application versions for a Vehicle based e-commerce solution
+
+![MultiVersionDesign](https://user-images.githubusercontent.com/5532892/131046205-68b685b4-1702-4465-b2d3-fe1ec1a409d7.png)
+
+**and the PlantUML source provided below ...**
+
+<details>
+ <summary>Click to show source</summary>
+
+```
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+UpdateRelStyle(black, black)
+
+System_Boundary(drivers, "Drivers") {
+  Person(driverWhite, "Driver with 1.X - Legacy HeadUnit")
+  Person(driverGreen, "Driver with 2.1.[5-9] and 2.X HeadUnit")
+  Person(driverBlue, "Driver with 2.1.[0-4] HeadUnit")
+}
+
+AddElementTag("egreen", $fontColor="green", $borderColor="green")
+AddElementTag("ewhite", $fontColor="white", $borderColor="white", $bgColor="black")
+AddElementTag("eblue", $fontColor="blue", $borderColor="blue")
+
+System_Boundary(c1, "Cloud Services") {
+    System(modernBackend, "Modern Backend", "Public membrane service for modern headunits")
+    System(legacyBackend, "Legacy Backend", "Public membrane service for legacy headunits")
+
+    System(ambassador, "Ambassador API Gateway") {        
+    }
+
+    System_Boundary(c6, "Inference Manager and Registry Unit") {
+      System(infer, "Inference Manager", "App State user workflow management")
+      System(registry, "Registry Service", "Knows which UI layout file relates to which app by name")
+    }
+
+    System_Boundary(c5, "UI Format Translation Farm") {
+      System_Boundary(translationWhite, "UI Format Translation Service White", $tags="ewhite")
+      System_Boundary(translationBlue, "UI Format Translation Service Blue", $tags="eblue")
+      System_Boundary(translationGreen, "UI Format Translation Service Green", $tags="egreen")
+    }
+
+    System_Boundary(c7, "3rd Party App Farm") {
+      System_Boundary(3rdpartyAppsWhite, "3rd Party Apps Legacy White: Many", $tags="ewhite") {
+      }
+      System_Boundary(3rdpartyAppsGreen, "3rd Party Apps Modern Green: Many", $tags="egreen") {
+      }
+      System_Boundary(3rdpartyAppsBlue, "3rd Party Apps Modern Blue BOR: Many", $tags="eblue") {
+      }
+    }
+}
+
+System_Ext(CDN, "CDN", "Fast distributed content network")
+
+
+AddRelTag("white", $lineColor="black")
+AddRelTag("green", $lineColor="green")
+AddRelTag("blue", $lineColor="blue")
+
+Rel(driverGreen, ambassador, "1.0 Green calls w/app name", "HTTPS", $tags="green")
+Rel(driverBlue, ambassador, "1.0 Blue calls w/app name", "HTTPS", $tags="blue")
+Rel(driverWhite, ambassador, "1.0 White calls w/app name", "HTTPS", $tags="white")
+
+Rel(ambassador, modernBackend, "1.1 Green proxies w/app name", "HTTPS", $tags="green")
+Rel(ambassador, modernBackend, "1.1 Blue proxies w/app name", "HTTPS", $tags="blue")
+Rel(ambassador, legacyBackend, "1.1 White proxies w/app name", "HTTPS", $tags="white")
+
+Rel(modernBackend, infer, "1.2. Green calls w/app name", "GRPC", $tags="green")
+Rel(modernBackend, infer, "1.2. Blue calls w/app name", "GRPC", $tags="blue")
+Rel(legacyBackend, infer, "1.2. White calls w/app name", "GRPC", $tags="white")
+
+Rel(infer, registry, "1.3 Get app name endpoint location", "GRPC", $tags="white")
+Rel(infer, registry, "1.3 Get app name endpoint location", "GRPC", $tags="blue")
+Rel(infer, registry, "1.3 Get app name endpoint location", "GRPC", $tags="green")
+Rel(infer, 3rdpartyAppsGreen, "1.4 Invoke specific green 3rd Party app", "GRPC", $tags="green")
+Rel(infer, 3rdpartyAppsBlue, "1.4 Invoke specific blue 3rd Party app", "GRPC", $tags="blue")
+Rel(infer, 3rdpartyAppsWhite, "1.4 Invoke specific white 3rd Party app", "GRPC", $tags="white")
+
+Rel(modernBackend, translationGreen, "1.5 sends modern UI format", "Uses", "GRPC", $tags="green")
+Rel(modernBackend, translationBlue, "1.5 sends modern UI format", "Uses", "GRPC", $tags="blue")
+Rel(legacyBackend, translationWhite, "1.5 sends non-modern UI format", "Uses", "GRPC", $tags="white")
+
+Rel_U(driverWhite, CDN, "2.0 loads text, icons, imgs", "HTTPS", $tags="white")
+Rel_U(driverBlue, CDN, "2.0 loads text, icons, imgs", "HTTPS", $tags="blue")
+Rel_U(driverGreen, CDN, "2.0 loads text, icons, imgs", "HTTPS", $tags="green")
+
+SHOW_LEGEND(false)
+@enduml
+```
+
+ </details>
