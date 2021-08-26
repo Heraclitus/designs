@@ -28,7 +28,11 @@ I've somewhat recently decided to adopt [C4 Model](https://c4model.com/) as my d
 Sadly, github [still doesn't have](https://github.community/t/support-uml-diagrams-in-markdown-with-plantuml-syntax/626/38) a good way to display PlantUML directly from markdown. 
 
 ## In Vehicle Multi-Model Cloud Connected App Design
-<img src="https://github.com/Heraclitus/designs/blob/main/docs/img/voice.png" height="1000"/>
+![GenericVoiceDesign](https://user-images.githubusercontent.com/5532892/131043509-4dd73892-d136-4d1e-8b5f-7bc267ee9a33.png)
+
+Below is a related design for specific partner that had a mediated NLU voice provider that obscured vehicle identity and required a more complex solution to disambiguate users in the same vehicle account and same Alexa account. 
+
+<div align="center"><img src="https://github.com/Heraclitus/designs/blob/main/docs/img/voice.png" height="1000"/></div>
 
 ### Below is the PlantUML/C4 Model source for that image.
 <details>
