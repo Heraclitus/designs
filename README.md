@@ -27,7 +27,13 @@ I've somewhat recently decided to adopt [C4 Model](https://c4model.com/) as my d
 
 Sadly, github [still doesn't have](https://github.community/t/support-uml-diagrams-in-markdown-with-plantuml-syntax/626/38) a good way to display PlantUML directly from markdown. 
 
-```
+<img src="https://github.com/Heraclitus/designs/blob/main/docs/img/voice.png" height="900"/>
+
+### Below is the source for that image.
+<details>
+ <summary>Click to show source</summary>
+
+ ```
 @startuml
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 
@@ -56,3 +62,5 @@ Rel(ihu, vbs, "Invokes API calls for matchup and UI screen match", "HTTPS1.1-JSO
 SHOW_LEGEND()
 @enduml
 ```
+
+ </details>
