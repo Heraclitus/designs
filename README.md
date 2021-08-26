@@ -27,9 +27,10 @@ I've somewhat recently decided to adopt [C4 Model](https://c4model.com/) as my d
 
 Sadly, github [still doesn't have](https://github.community/t/support-uml-diagrams-in-markdown-with-plantuml-syntax/626/38) a good way to display PlantUML directly from markdown. 
 
-<img src="https://github.com/Heraclitus/designs/blob/main/docs/img/voice.png" height="900"/>
+## In Vehicle Multi-Model Cloud Connected App Design
+<img src="https://github.com/Heraclitus/designs/blob/main/docs/img/voice.png" height="1000"/>
 
-### Below is the source for that image.
+### Below is the PlantUML/C4 Model source for that image.
 <details>
  <summary>Click to show source</summary>
 
